@@ -172,15 +172,20 @@ def update_text(urn: str):
     new_element = etree.fromstring(request_data['translationText'])
     container.append(new_element)
     translation_xml.write(filename, encoding='utf-8', pretty_print=True)
+    return jsonify({'success': 'The translation was created. Make sure you click on "Save to Git" when you finish with all your translations.'}), 201
+
+@app.route('/git', methods=['POST'])
+def commit_and_push():
+    request_data = json.loads(request.data)
     user = request_data['user']
-    branch_name = sub(r'\W', '-', urn + '-' + user + str(datetime.today()))
+    branch_name = sub(r'\W', '-', user + '-' + str(datetime.today()))
     chdir(CJHNT_TEXT_FOLDER)
     run_git_command(['git', 'checkout', '-b', branch_name])
     run_git_command(['git', 'add', '-A'])
-    run_git_command(['git', 'commit', '-m', f'New translation for {urn} by {user}'])
+    run_git_command(['git', 'commit', '-m', f'New translations by {user}'])
     run_git_command(['git', 'push', 'origin', branch_name])
     run_git_command(['git', 'checkout', 'master'])
-    return jsonify({'success': 'The translation was created and is awaiting approval.'}), 201
+    return jsonify({'success': 'Your changes were pushed to Git. An administrator will soon review them.'}), 201
 
 if __name__ == '__main__':
     app.run(port=5001)
