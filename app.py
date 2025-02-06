@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 basedir = path.abspath(path.dirname(__file__))
 
-CJHNT_TEXT_FOLDER = path.join(environ.get('HOME'), 'CJHNT_Texts_editing')
+CJHNT_TEXT_FOLDER = path.join(environ.get('HOME'), 'CJHNT_Texts')
 ns = {'tei': 'http://www.tei-c.org/ns/1.0'}
 
 if not app.debug and not app.testing:
